@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SecondViewController.h"
 
 @interface HelloWorldViewController : UIViewController
+{
+    SecondViewController *secondViewController;
+}
+
+- (IBAction)btnClicked:(id)sender;
 
 @end

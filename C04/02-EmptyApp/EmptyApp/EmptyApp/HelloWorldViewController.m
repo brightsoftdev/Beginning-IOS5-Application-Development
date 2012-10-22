@@ -35,4 +35,25 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)btnClicked:(id)sender
+{
+    if (secondViewController == nil) {
+        secondViewController = [[SecondViewController alloc] initWithNibName:@"SecondViewController" bundle:nil];
+    }
+    //[self.view addSubview:secondViewController.view];
+    [UIView transitionWithView:self.view
+                      duration:1.5
+                       options:UIViewAnimationOptionTransitionFlipFromRight | UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionAllowAnimatedContent
+                    animations:^{
+                        [self.view addSubview:secondViewController.view];
+                    }
+                    completion:NULL];
+}
+
+- (void)dealloc
+{
+    [secondViewController release];
+    [super dealloc];
+}
+
 @end
