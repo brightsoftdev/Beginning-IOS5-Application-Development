@@ -78,11 +78,34 @@
     NSDictionary *info = [notification userInfo];
     
     NSValue *aValue = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+    
+    CGRect keyboardRect = [self.view convertRect:[aValue CGRectValue] fromView:nil];
+    
+    NSLog(@"%f", keyboardRect.size.height);
+    
+    //--resize the scroll view (with keyboard)--
+    CGRect viewFrame = [scrollView frame];
+    viewFrame.size.height -= keyboardRect.size.height;
+    scrollView.frame = viewFrame;
+    
+    CGRect textFieldRect = [currentTextField frame];
+    [scrollView scrollRectToVisible:textFieldRect animated:YES];
+    
+    keyboardIsShown = YES;
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification
 {
-
+    NSDictionary *info = [notification userInfo];
+    
+    NSValue *aValue = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardRect = [self.view convertRect:[aValue CGRectValue] fromView:nil];
+    
+    CGRect viewFrame = [scrollView frame];
+    viewFrame.size.height += keyboardRect.size.height;
+    scrollView.frame = viewFrame;
+    
+    keyboardIsShown = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
