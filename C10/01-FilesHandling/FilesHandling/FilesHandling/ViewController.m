@@ -22,6 +22,42 @@
     [self writeToFile:@"a string of text" withFileName:fileName];
     NSString *fileContent = [self readFromFile:fileName];
     NSLog(@"%@", fileContent);
+#if 0
+    NSString *plistFileName = [[self documentsPath] stringByAppendingPathComponent:@"Apps.plist"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:plistFileName]) {
+        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:plistFileName];
+        for (NSString *category in dict) {
+            NSLog(@"%@", category);
+            NSLog(@"========");
+            
+            NSArray *titles = [dict valueForKey:category];
+            
+            for (NSString *title in titles) {
+                NSLog(@"%@", title);
+            }
+        }
+        [dict release];
+    } else {
+        NSString *pListPath = [[NSBundle mainBundle] pathForResource:@"Apps" ofType:@"plist"];
+        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:pListPath];
+        NSMutableDictionary *copyOfDict = [dict mutableCopy];
+        NSArray *categoriesArray = [[copyOfDict allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        for (NSString *category in categoriesArray) {
+            NSArray *titles = [dict valueForKey:category];
+            
+            NSMutableArray *mutableTitles = [titles mutableCopy];
+            
+            [mutableTitles addObject:@"New App title"];
+            
+            [copyOfDict setObject:mutableTitles forKey:category];
+            [mutableTitles release];
+        }
+        fileName = [[self documentsPath] stringByAppendingPathComponent:@"Apps.plist"];
+        [copyOfDict writeToFile:fileName atomically:YES];
+        [dict release];
+        [copyOfDict release];
+    }
+#endif
 }
 
 - (void)didReceiveMemoryWarning

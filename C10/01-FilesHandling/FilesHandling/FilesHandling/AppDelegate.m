@@ -19,8 +19,40 @@
     [super dealloc];
 }
 
+- (void)copyFileInBundleToDocumentsFolder:(NSString *)fileName withExtension:(NSString *)ext
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithString:fileName]];
+    
+    filePath = [filePath stringByAppendingString:@"."];
+    filePath = [filePath stringByAppendingString:ext];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:filePath]) {
+        NSString *pathToFileInBundle = [[NSBundle mainBundle]pathForResource:fileName ofType:ext];
+        
+        NSError *error = nil;
+        bool success = [fileManager copyItemAtPath:pathToFileInBundle toPath:filePath error:&error];
+        
+        if (success) {
+            NSLog(@"%@",pathToFileInBundle);
+            NSLog(@"%@",filePath);
+            NSLog(@"File copied");
+        } else {
+            NSLog(@"%@",pathToFileInBundle);
+            NSLog(@"%@",filePath);
+            NSLog(@"%@",[error localizedDescription]);
+        }
+    }
+}
+
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self copyFileInBundleToDocumentsFolder:@"Apps" withExtension:@"plist"];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
